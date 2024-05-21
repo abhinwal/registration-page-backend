@@ -1,0 +1,35 @@
+var studentService = require('./studentService');
+
+var createStudentControllerFn = async (req, res) => {
+    try {
+        console.log(req.body); // Consider removing or replacing with a more secure logging approach
+        var status = await studentService.createStudentDBService(req.body);
+        console.log(status); // Same as above comment on logging
+
+        if (status) {
+            res.status(201).json({ "status": true, "message": "Registration done successfully" });
+        } else {
+            res.status(500).json({ "status": false, "message": "Error creating user" });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ "status": false, "message": "Server error" });
+    }
+}
+
+var loginUserControllerFn = async (req, res) => {
+    try {
+        var result = await studentService.loginuserDBService(req.body);
+        if (result.status) {
+            res.status(200).json({ "status": true, "message": result.msg });
+        } else {
+            res.status(401).json({ "status": false, "message": result.msg });
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ "status": false, "message": "Server error" });
+    }
+}
+
+module.exports = { createStudentControllerFn, loginUserControllerFn };
